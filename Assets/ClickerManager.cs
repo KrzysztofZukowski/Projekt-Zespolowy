@@ -16,16 +16,74 @@ public class ClickerManager : MonoBehaviour
     public int autoClickUpgradeCost = 50;
     public TMP_Text autoClickText;
 
+    void Awake()
+    {
+        LoadGame();
+    }
+
     void Start()
     {
         UpdateUI();
         StartCoroutine(AutoClickLoop());
     }
 
+    public void SaveGame()
+    {
+        PlayerPrefs.SetInt("Score", score);
+        PlayerPrefs.SetInt("PointsPerClick", pointsPerClick);
+        PlayerPrefs.SetInt("AutoClickLevel", autoClickLevel);
+        PlayerPrefs.SetInt("AutoClickCost", autoClickUpgradeCost);
+        PlayerPrefs.SetFloat("AutoClickInterval", autoClickInterval);
+
+        PlayerPrefs.Save(); // Wymusza zapis na dysku
+        Debug.Log("Gra zapisana!");
+    }
+
+    public void LoadGame()
+    {
+        // Drugi parametr w GetInt/GetFloat to wartoœæ domyœlna, jeœli zapis nie istnieje
+        score = PlayerPrefs.GetInt("Score", 0);
+        pointsPerClick = PlayerPrefs.GetInt("PointsPerClick", 1);
+        autoClickLevel = PlayerPrefs.GetInt("AutoClickLevel", 0);
+        autoClickUpgradeCost = PlayerPrefs.GetInt("AutoClickCost", 50);
+        autoClickInterval = PlayerPrefs.GetFloat("AutoClickInterval", 5.0f);
+
+        Debug.Log("Gra wczytana!");
+    }
+
     public void AddPoint()
     {
         score += pointsPerClick;
         UpdateUI();
+        SaveGame();
+    }
+
+    void OnApplicationQuit()
+    {
+        SaveGame();
+    }
+
+    // Wywo³ywane, gdy gracz zminimalizuje grê (np. odbierze telefon, wróci do menu telefonu)
+    // To jest KLUCZOWE na Androidzie/iOS
+    void OnApplicationFocus(bool hasFocus)
+    {
+        // Jeœli hasFocus jest false, oznacza to, ¿e gra w³aœnie zosta³a zminimalizowana
+        if (!hasFocus)
+        {
+            SaveGame();
+        }
+    }
+
+    // Opcjonalnie: Zapis co okreœlony czas (np. co 60 sekund) dla bezpieczeñstwa
+    private float timer = 0;
+    void Update()
+    {
+        timer += Time.deltaTime;
+        if (timer >= 60f)
+        {
+            SaveGame();
+            timer = 0;
+        }
     }
 
     // Funkcja kupowania ulepszenia AutoClickera
@@ -43,6 +101,7 @@ public class ClickerManager : MonoBehaviour
 
             autoClickUpgradeCost = (int)(autoClickUpgradeCost * 1.7f); // Koszt roœnie
             UpdateUI();
+            SaveGame();
         }
     }
 

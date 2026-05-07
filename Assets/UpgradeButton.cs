@@ -12,6 +12,7 @@ public class UpgradeButton : MonoBehaviour
 
     void Start()
     {
+        cost = PlayerPrefs.GetInt("Cost_" + upgradeName, cost);
         UpdateUI();
     }
 
@@ -27,6 +28,7 @@ public class UpgradeButton : MonoBehaviour
 
             manager.UpdateUI(); // Odœwie¿ punkty g³ówne
             UpdateUI();         // Odœwie¿ tekst na tym przycisku
+            manager.SaveGame(); // Zapisz stan gry po zakupie
         }
     }
 
