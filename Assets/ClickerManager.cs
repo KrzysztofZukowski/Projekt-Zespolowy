@@ -5,6 +5,7 @@ public class ClickerManager : MonoBehaviour
 {
     public UIManager uiManager;
     public GameObject upgradesPanel;
+    public GameObject researchPanel;
     public UnityEngine.UI.Button mainClickButton;
     public GameObject researchButton;
     public ResearchManager researchManager;
@@ -21,8 +22,15 @@ public class ClickerManager : MonoBehaviour
         uiManager.UpdateScore(gameData.Score);
         uiManager.UpdateAutoClicker(gameData.AutoClicker);
         StartCoroutine(AutoClickLoop());
-        researchManager.OnResearchChanged += UpdateResearchUI;
-        UpdateResearchUI();
+        if (researchManager != null)
+        {
+            researchManager.OnResearchChanged += UpdateResearchUI;
+            UpdateResearchUI();
+        }
+        else
+        {
+            Debug.LogError("ResearchManager jest nieprzypisany w ClickerManager!");
+        }
     }
 
     public void AddPoint()
@@ -30,6 +38,7 @@ public class ClickerManager : MonoBehaviour
         gameData.Score += gameData.PointsPerClick;
         uiManager.UpdateScore(gameData.Score);
         gameData.Save();
+        Debug.Log($"[ClickerManager] Dodano punkt! Aktualny wynik: {gameData.Score}");
     }
 
     public void BuyAutoClicker()
@@ -59,6 +68,12 @@ public class ClickerManager : MonoBehaviour
     public void ToggleUpgradesView(bool show)
     {
         upgradesPanel.SetActive(show);
+        mainClickButton.interactable = !show;
+    }
+
+    public void ToggleResearchView(bool show)
+    {
+        researchPanel.SetActive(show);
         mainClickButton.interactable = !show;
     }
 
