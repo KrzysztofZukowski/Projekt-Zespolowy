@@ -1,9 +1,9 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using TMPro;
 
 public class UpgradeButton : MonoBehaviour
 {
-    public ClickerManager manager; // Przeciπgnij tu GameManager
+    public ClickerManager manager; // PrzeciƒÖgnij tu GameManager
     public int bonus;
     public int cost;
     public string upgradeName;
@@ -18,17 +18,17 @@ public class UpgradeButton : MonoBehaviour
 
     public void OnButtonClick()
     {
-        if (manager.score >= cost)
+        if (manager.gameData.Score >= cost)
         {
-            manager.score -= cost;
-            manager.pointsPerClick += bonus;
+            manager.gameData.Score -= cost;
+            manager.gameData.PointsPerClick += bonus;
 
-            // Opcjonalnie: zwiÍksz koszt po zakupie
+            // Opcjonalnie: zwiƒôksz koszt po zakupie
             cost = (int)(cost * 1.6f);
 
-            manager.UpdateUI(); // Odúwieø punkty g≥Ûwne
-            UpdateUI();         // Odúwieø tekst na tym przycisku
-            manager.SaveGame(); // Zapisz stan gry po zakupie
+            manager.uiManager.UpdateScore(manager.gameData.Score); // Od≈õwie≈º punkty g≈Ç√≥wne
+            UpdateUI();         // Od≈õwie≈º tekst na tym przycisku
+            manager.gameData.Save(); // Zapisz stan gry po zakupie
         }
     }
 
