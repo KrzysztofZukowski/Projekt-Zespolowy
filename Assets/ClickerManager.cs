@@ -11,6 +11,7 @@ public class ClickerManager : MonoBehaviour
     public ResearchManager researchManager;
 
     public GameData gameData = new GameData();
+    private bool lastAdsRemovedState = false;
 
     void Awake()
     {
@@ -21,6 +22,7 @@ public class ClickerManager : MonoBehaviour
     {
         uiManager.UpdateScore(gameData.Score);
         uiManager.UpdateAutoClicker(gameData.AutoClicker);
+        UpdateIAPUI();
         StartCoroutine(AutoClickLoop());
         if (researchManager != null)
         {
@@ -30,6 +32,16 @@ public class ClickerManager : MonoBehaviour
         else
         {
             Debug.LogError("ResearchManager jest nieprzypisany w ClickerManager!");
+        }
+    }
+
+    void Update()
+    {
+        bool currentAdsRemoved = gameData.IsAdsRemoved();
+        if (currentAdsRemoved != lastAdsRemovedState)
+        {
+            lastAdsRemovedState = currentAdsRemoved;
+            UpdateIAPUI();
         }
     }
 
@@ -80,5 +92,13 @@ public class ClickerManager : MonoBehaviour
     private void UpdateResearchUI()
     {
         uiManager.UpdateResearchUI(researchManager);
+    }
+
+    public void UpdateIAPUI()
+    {
+        if (uiManager != null)
+        {
+            uiManager.UpdateIAPUI(gameData.IsAdsRemoved());
+        }
     }
 }

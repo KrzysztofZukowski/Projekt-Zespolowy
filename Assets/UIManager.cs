@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -10,6 +10,9 @@ public class UIManager : MonoBehaviour
     public TMP_Text researchPointsText;
     public TMP_Text discountUpgradeText;
     public TMP_Text researchGenUpgradeText;
+
+    [Header("IAP")]
+    public GameObject buyNoAdsButton;
 
     public void UpdateScore(int score)
     {
@@ -32,6 +35,14 @@ public class UIManager : MonoBehaviour
         researchPointsText.text = $"Punkty badań: {research.researchPoints}";
         discountUpgradeText.text = $"Zniżka na ulepszenia: {research.discountLevel * 10}%\nKoszt: {research.discountUpgradeCost}";
         researchGenUpgradeText.text = $"Generacja punktów badań: {research.researchPerInterval}/interwał\nKoszt: {research.researchGenUpgradeCost}";
+    }
+
+    public void UpdateIAPUI(bool adsRemoved)
+    {
+        if (buyNoAdsButton != null)
+        {
+            buyNoAdsButton.SetActive(!adsRemoved);
+        }
     }
 }
 

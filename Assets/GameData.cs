@@ -5,11 +5,18 @@ public class GameData
     public int Score { get; set; }
     public int PointsPerClick { get; set; } = 1;
     public AutoClicker AutoClicker { get; set; } = new AutoClicker(0, 5f, 50);
+    public System.DateTime AdsRemovedUntil { get; set; } = System.DateTime.MinValue;
+
+    public bool IsAdsRemoved()
+    {
+        return System.DateTime.Now < AdsRemovedUntil;
+    }
 
     public void Save()
     {
         PlayerPrefs.SetInt("Score", Score);
         PlayerPrefs.SetInt("PointsPerClick", PointsPerClick);
+        PlayerPrefs.SetString("AdsRemovedUntil", AdsRemovedUntil.ToString("O"));
         if (AutoClicker != null)
         {
             PlayerPrefs.SetInt("AutoClickLevel", AutoClicker.Level);
@@ -24,6 +31,12 @@ public class GameData
         Score = PlayerPrefs.GetInt("Score", 0);
         PointsPerClick = PlayerPrefs.GetInt("PointsPerClick", 1);
         if (PointsPerClick <= 0) PointsPerClick = 1; // Zabezpieczenie przed błędem z zapisem 0
+        
+        string adsRemovedStr = PlayerPrefs.GetString("AdsRemovedUntil", "");
+        if (System.DateTime.TryParse(adsRemovedStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out System.DateTime dt))
+        {
+            AdsRemovedUntil = dt;
+        }
 
         int level = PlayerPrefs.GetInt("AutoClickLevel", 0);
         int cost = PlayerPrefs.GetInt("AutoClickCost", 50);
